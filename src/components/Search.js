@@ -1,12 +1,19 @@
 import React from "react";
 export default class Search extends React.Component {
   state = {
-    search: "",
+    search: "classic",
+    type: "all",
   };
   handleKey = (e) => {
     if (e.key === "Enter") {
-      this.props.searchMovie(this.state.search);
+      this.props.searchMovie(this.state.search, this.state.type);
     }
+  };
+
+  handleFilter = (e) => {
+    this.setState(() => ({type: e.target.dataset.type}), () => {
+        this.props.searchMovie(this.state.search, this.state.type)
+    });
   };
   render() {
     return (
@@ -22,10 +29,55 @@ export default class Search extends React.Component {
                 className="validate"
                 onKeyDown={this.handleKey}
               />
-              <button className="btn search-btn" onClick={() => this.props.searchMovie(this.state.search)}>
+              <button
+                className="btn search-btn"
+                onClick={() => this.props.searchMovie(this.state.search, this.state.type)}
+              >
                 Search Movies
               </button>
             </div>
+
+            <div>
+              <label>
+                <input
+                  className="with-gap"
+                  name="type"
+                  type="radio"
+                  data-type="all"
+                  onChange={this.handleFilter}
+                  checked={this.state.type === "all"}
+                />
+                <span>All</span>
+              </label>
+              <label>
+                <input
+                  className="with-gap"
+                  name="type"
+                  type="radio"
+                  data-type="movie"
+                  onChange={this.handleFilter}
+                  checked={this.state.type === "movie"}
+                />
+                <span>Movies only</span>
+              </label>
+              <label>
+                <input
+                  className="with-gap"
+                  name="type"
+                  type="radio"
+                  data-type="series"
+                  onChange={this.handleFilter}
+                  checked={this.state.type === "series"}
+                />
+                <span>Series only</span>
+              </label>
+            </div>
+
+            {this.props.searchTotal.length ? (
+              <p>Natijalar: {this.props.searchTotal}ta</p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </>
